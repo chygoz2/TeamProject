@@ -4,6 +4,7 @@ import java.awt.event.ActionListener;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.*;
 import java.util.Scanner;
 
 import javax.swing.*;
@@ -18,7 +19,7 @@ public class TimetableGUI extends JFrame implements ActionListener{
 	private JComboBox<String> cb1;
 	private JComboBox<String> cb2;
 	private JComboBox<String> cb3;
-	private JButton b1,b2; //b1 is remove, b2 is assign
+	private JButton b1,b2,b3,b4; //b1 is remove, b2 is assign, b3 is save, b4 is exit
 	private String [][] rowData;
 	private Room [] rooms;
 	
@@ -62,7 +63,7 @@ public class TimetableGUI extends JFrame implements ActionListener{
 		//p1.add(sP);
 		//p1.add(p3);
 
-		GridLayout grid3 = new GridLayout(4,2);
+		GridLayout grid3 = new GridLayout(5,2);
 		p3.setLayout(grid3);
 		JLabel l1 = new JLabel("Module Code");
 		JLabel l2 = new JLabel("Time Slot");
@@ -94,13 +95,18 @@ public class TimetableGUI extends JFrame implements ActionListener{
 
 		b1 = new JButton("Remove");
 		b2 = new JButton("Assign");
+		b3 = new JButton("Save Timetable");
+		b4 = new JButton("Quit");
 		b1.addActionListener(this);
 		b2.addActionListener(this);
+		b3.addActionListener(this);
+		b4.addActionListener(this);
 
 		p3.add(l1); p3.add(cb1);
 		p3.add(l2); p3.add(cb2);
 		p3.add(l3); p3.add(cb3);
 		p3.add(b1); p3.add(b2);
+		p3.add(b3); p3.add(b4);
 
 		//Panel to add p3 and p2 onto
 		GridLayout grid4 = new GridLayout(1,2);
@@ -255,7 +261,8 @@ public class TimetableGUI extends JFrame implements ActionListener{
 	
 	public void actionPerformed(ActionEvent e){
 		Object source = (JButton)e.getSource();
-		if(source == b2){
+		if(source == b2)
+		{
 			String code = (String)cb1.getSelectedItem(); 
 			String time = (String)cb2.getSelectedItem();
 			String room = (String)cb3.getSelectedItem();
@@ -269,8 +276,49 @@ public class TimetableGUI extends JFrame implements ActionListener{
 				displayCourses();
 				}
 		}
-
+		
+		else if(source == b3)
+			saveOutput();
+		
+		else if(source == b4)
+		{
+			int confirm = JOptionPane.showConfirmDialog(null, "You are about to exit the program. Have you saved the timetable first?", "Exit Program?",  JOptionPane.YES_NO_CANCEL_OPTION);
+			
+			if(confirm == JOptionPane.YES_OPTION)
+				System.exit(0);
+			else if(confirm == JOptionPane.NO_OPTION)
+			{
+				int confirm2 = JOptionPane.showConfirmDialog(null, "Would you like to save the timetable?", "Exit Program?", JOptionPane.YES_NO_OPTION);
+				
+				if(confirm2 == JOptionPane.YES_OPTION)
+				{
+					saveOutput();
+					System.exit(0);
+				}
+				else
+					System.exit(0);
+			}
+		}
 	}
+	
+	/**
+	 * Method to process saving the data from the timetable to a text file called ModulesOut.txt
+	 */
+	private void saveOutput()
+	{
+		String output = ta1.getText();
+		try
+		{
+			FileWriter writer = new FileWriter("ModulesOut.txt");
+			writer.write(output);
+			writer.close();
+		}
+		catch (IOException x)
+		{
+			JOptionPane.showMessageDialog(null, "Output Error", "Error: File I/O Error", JOptionPane.ERROR_MESSAGE);
+		}
+	}
+	
 	private boolean validateInput(String c,String t, String m)
 	{
 		Module p = tt.getModuleByCode(c);
