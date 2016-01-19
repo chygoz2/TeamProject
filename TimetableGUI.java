@@ -21,7 +21,7 @@ public class TimetableGUI extends JFrame implements ActionListener{
 	private JButton b1,b2; //b1 is remove, b2 is assign
 	private String [][] rowData;
 	private Room [] rooms;
-
+	
 	public TimetableGUI(){
 		tt = new Timetable();
 		initializeRooms();
@@ -254,15 +254,68 @@ public class TimetableGUI extends JFrame implements ActionListener{
 			String code = (String)cb1.getSelectedItem(); 
 			String time = (String)cb2.getSelectedItem();
 			String room = (String)cb3.getSelectedItem();
-			Module m = tt.getModuleByCode(code);
-			m.setRoom(room.charAt(0));
-			m.setTimeSlot(time);
-			fillTable();
-			displayCourses();
+			
+			if(validateInput(code, time, room))
+				{	
+				Module m = tt.getModuleByCode(code);
+				m.setRoom(room.charAt(0));
+				m.setTimeSlot(time);
+				fillTable();
+				displayCourses();
+				}
 		}
+
 	}
+	private boolean validateInput(String c,String t, String m)
+	{
+		Module p = tt.getModuleByCode(c);
+		int classSize = p.getClassSize();
+		int capacity;
+		Room roomOne = rooms[7];
+		switch(m){
+		case "A":
+			capacity = 100;
+			break;
+		case "B":
+			capacity = 100;
+			break;
+		case "C":
+			capacity = 60;
+			break;
+		case "D":
+			capacity = 60;
+			break;
+		case "E":
+			capacity = 60;
+			break;
+		case "F":
+			capacity = 30;
+			break;
+		case "G":
+			capacity = 30;
+			break;
+		case "H":
+			capacity = 30;
+			break;
+		default:
+			capacity = 0;
+		}
+			
+		int roomSize = capacity;
+		if(classSize>roomSize)
+		{
+			JOptionPane warning = new JOptionPane();
+			warning.showMessageDialog(null, "Room is too small for class", "Error",
+					JOptionPane.ERROR_MESSAGE);
+			return false;
+		}	
+
+		return true;
+	}
+
 	public static void main(String [] args){
 		JFrame f = new TimetableGUI();
 		f.setVisible(true);
 	}
+	
 }
