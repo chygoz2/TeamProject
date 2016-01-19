@@ -1,6 +1,7 @@
 
 public class Timetable {
 
+	//instance variables
 	private Module [] programme;
 	private final int SIZE = 24;
 	private int moduleCount;
@@ -11,16 +12,22 @@ public class Timetable {
 		moduleCount = 0;
 	}
 	
+	/**
+	 * method to create and add a module to the timetable
+	 * @param line is a string containing a line read from the ModulesIn.txt file
+	 */
 	public void addModule(String line){
-		String [] token = line.split("[ ]+");
-		String code = token[0];
-		String title = token[1];
-		String time = token[2];
-		char room = token[3].charAt(0);
-		int capacity = Integer.parseInt(token[4]);
-		Module m = new Module(code,title,time,capacity,room);
-		programme[moduleCount] = m;
-		moduleCount++;
+		String [] token = line.split("[ ]+"); //split the line into an array of strings
+		String code = token[0]; //element at index 0 of token will be the module code
+		String title = token[1]; //element at index 1 of token will be the module title
+		String time = token[2]; //element at index 2 of token will be the time slot for module
+		char room = token[3].charAt(0); //element at index 3 of token will be a string containing just one letter to represent room.
+										//this string is converted to a char type
+		int capacity = Integer.parseInt(token[4]); //element at index 4 of token will be the number of people enrolled in the module.
+										//it is converted to an integer
+		Module m = new Module(code,title,time,capacity,room); //create a module object from the variables read
+		programme[moduleCount] = m; //add the module object to the array
+		moduleCount++; //increment the number of modules currently present in the timetable
 	}
 	
 	//why will you want to delete a module???
