@@ -29,9 +29,10 @@ public class TimetableGUI extends JFrame implements ActionListener{
 		setSize(800,600);
 		setLocation(350,100);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		GridLayout grid = new GridLayout(1,2);
+		
+		GridLayout grid = new GridLayout(2,1);
 		setLayout(grid);
-
+		
 		String [] columnNames = {" ","A","B","C","D","E","F","G","H"};
 
 		rowData = new String[10][9];
@@ -44,16 +45,21 @@ public class TimetableGUI extends JFrame implements ActionListener{
 		JPanel p1 = new JPanel();
 		JPanel p2 = new JPanel();
 		JPanel p3 = new JPanel();
-
+		JPanel p4 = new JPanel();
+		
 		table = new JTable(rowData,columnNames);
+		//Prevents column headers from being rearranged
+		table.getTableHeader().setReorderingAllowed(false);
 		JScrollPane sP = new JScrollPane(table);
 
+		
 		GridLayout grid2 = new GridLayout(2,1);
 		p1.setLayout(grid2);
+		
 		p1.add(sP);
 
-		p1.add(sP);
-		p1.add(p3);
+		//p1.add(sP);
+		//p1.add(p3);
 
 		GridLayout grid3 = new GridLayout(4,2);
 		p3.setLayout(grid3);
@@ -95,19 +101,22 @@ public class TimetableGUI extends JFrame implements ActionListener{
 		p3.add(l3); p3.add(cb3);
 		p3.add(b1); p3.add(b2);
 
+		p4.add(p3);
 		TableColumn tc = table.getColumnModel().getColumn(0);
 		tc.setPreferredWidth(90);
 		table.setRowHeight(25);
 
-		ta1 = new JTextArea();
+		ta1 = new JTextArea(13,36);
 		ta1.setFont(new Font("Courier", Font.PLAIN, 14));
 		ta1.setEditable(false);
-		p2.setLayout(new BorderLayout());
-		p2.add(ta1);
+		//Adds a scroll pane to the text area
+		JScrollPane textPane = new JScrollPane(ta1);
+		//p2.setLayout(new BorderLayout());
+		p2.add(textPane);
 
 		add(p1);
 		add(p2);
-
+		add(p3);
 		readFile();
 		fillTable();
 	}
