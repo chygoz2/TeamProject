@@ -108,7 +108,7 @@ public class TimetableGUI extends JFrame implements ActionListener{
 		p3.add(b1); p3.add(b2);
 		p3.add(b3); p3.add(b4);
 
-		//Panel to add p3 and p2 onto
+		//Panel p4 will have p2 and p3 added onto it
 		GridLayout grid4 = new GridLayout(1,2);
 		p4.setLayout(grid4);
 		p4.add(p3);
@@ -259,7 +259,8 @@ public class TimetableGUI extends JFrame implements ActionListener{
 		rooms[7] = new Room('H',30);
 	}
 	
-	public void actionPerformed(ActionEvent e){
+	public void actionPerformed(ActionEvent e)
+	{
 		Object source = (JButton)e.getSource();
 		if(source == b2)
 		{
@@ -277,9 +278,13 @@ public class TimetableGUI extends JFrame implements ActionListener{
 				}
 		}
 		
+		//If the save button is clicked, calls the saveOutput() method to save the timetable data to a textfile
 		else if(source == b3)
 			saveOutput();
 		
+		//If the quit button is pressed, will ask the user if they have saved the timetable first.
+		//If they click YES, quit the program. Else if NO is pressed, will ask the user if they wish to save the timetable.
+		//If Yes is clicked, saves the timetable and quits the program. Else, quits the program without saving
 		else if(source == b4)
 		{
 			int confirm = JOptionPane.showConfirmDialog(null, "You are about to exit the program. Have you saved the timetable first?", "Exit Program?",  JOptionPane.YES_NO_CANCEL_OPTION);
