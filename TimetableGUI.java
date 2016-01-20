@@ -25,11 +25,26 @@ public class TimetableGUI extends JFrame implements ActionListener{
 	private String [][] rowData;
 	private Room [] rooms;
 	
-	
+	/**
+	 * constructor to create a TimetableGUI object
+	 */
 	public TimetableGUI(){
 		tt = new Timetable();
 		m = tt.getModules();
-		initializeRooms();
+		//initializeRooms(); may not be needed
+		
+		if(readFile()) //if ModulesIn.txt file can be read and opened, lay out components
+		{
+			layoutGUIComponents();
+			displayCourses();
+			fillTable();
+		}
+		else //otherwise terminate program
+			System.exit(0);
+	}
+	
+	private void layoutGUIComponents()
+	{
 		setTitle("Timetable");
 		setSize(650,500);
 		setLocation(350,100);
@@ -38,9 +53,11 @@ public class TimetableGUI extends JFrame implements ActionListener{
 		GridLayout grid = new GridLayout(2,2);
 		setLayout(grid);
 		*/
-		String [] columnNames = {" ","A","B","C","D","E","F","G","H"};
+		
+		String [] columnNames = {" ","A","B","C","D","E","F","G","H"}; //correspond to the names of columns
 
-		rowData = new String[10][9];
+		rowData = new String[10][9]; //creates a String array object to hold table data
+		//fills the first column of each row of the table with the specified time slots
 		rowData[0][0] = "MonAM";	rowData[1][0] = "MonPM";  
 		rowData[2][0] = "TueAM";	rowData[3][0] = "TuePM";
 		rowData[4][0] = "WedAM";	rowData[5][0] = "WedPM";
@@ -73,8 +90,10 @@ public class TimetableGUI extends JFrame implements ActionListener{
 		JLabel l2 = new JLabel("Time Slot");
 		JLabel l3 = new JLabel("Room");
 
+		//combobox to hold the module classes
 		cb1 = new JComboBox<String>();
 
+		//combobox to hold the timeslots
 		cb2 = new JComboBox<String>();
 		cb2.addItem("MonAM");
 		cb2.addItem("MonPM");
@@ -87,6 +106,7 @@ public class TimetableGUI extends JFrame implements ActionListener{
 		cb2.addItem("FriAM");
 		cb2.addItem("FriPM");
 
+		//combobox to hold the rooms
 		cb3 = new JComboBox<String>();
 		cb3.addItem("A");
 		cb3.addItem("B");
@@ -132,11 +152,12 @@ public class TimetableGUI extends JFrame implements ActionListener{
 
 		add(p1, BorderLayout.NORTH);
 		add(p4);
-		readFile();
-		fillTable();
 	}
 
-	public void readFile(){
+	/**
+	 * method to read the content of the ModulesIn.txt file
+	 */
+	private boolean readFile(){
 
 		try {
 			FileReader reader = new FileReader("ModulesIn.txt");
@@ -146,15 +167,15 @@ public class TimetableGUI extends JFrame implements ActionListener{
 				tt.addModule(line);
 			}
 
-			displayCourses();
-
 			reader.close();
 			scanner.close();
+			return true;
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			JOptionPane.showMessageDialog(null, "The file was not found", "Error", JOptionPane.ERROR_MESSAGE); //notify user that file was not found
+			return false;
 		} catch (IOException e){
-			e.printStackTrace();
+			JOptionPane.showMessageDialog(null, "The file could not be opened", "Error", JOptionPane.ERROR_MESSAGE); //notify user that file could not be opened
+			return false;
 		}
 
 	}
