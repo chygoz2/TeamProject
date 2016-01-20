@@ -13,7 +13,9 @@ import javax.swing.table.TableColumn;
 
 public class TimetableGUI extends JFrame implements ActionListener{
 
+	//instance variables
 	private Timetable tt;
+	private Module [] m;
 	private JTable table;
 	private JTextArea ta1;
 	private JComboBox<String> cb1;
@@ -23,8 +25,10 @@ public class TimetableGUI extends JFrame implements ActionListener{
 	private String [][] rowData;
 	private Room [] rooms;
 	
+	
 	public TimetableGUI(){
 		tt = new Timetable();
+		m = tt.getModules();
 		initializeRooms();
 		setTitle("Timetable");
 		setSize(650,500);
@@ -158,7 +162,6 @@ public class TimetableGUI extends JFrame implements ActionListener{
 	public void displayCourses()
 	{
 		String courses = "";
-		Module [] m = tt.getModules();
 		courses += String.format("%-10s%-10s%-8s%-8s%n", "Code","Time","Room","Size");
 		for(int i=0; i<m.length; i++){
 			courses += String.format("%-10s%-10s%-8s%-8s%n", m[i].getModuleCode(), m[i].getTimeSlot(),
@@ -169,7 +172,6 @@ public class TimetableGUI extends JFrame implements ActionListener{
 	}
 	
 	public void fillTable(){
-		Module [] m = tt.getModules();
 		for(int i=0; i<m.length; i++)
 		{
 			int row = 0, col = 0;
@@ -311,7 +313,17 @@ public class TimetableGUI extends JFrame implements ActionListener{
 	 */
 	private void saveOutput()
 	{
-		String output = ta1.getText();
+		//String output = ta1.getText(); 
+		//had to modify the output variable because the format of text in the text area and the format in the moduleIn.txt file are not the same
+		//whereas according to the specification, the format of ModulesIn.txt and ModulesOut.txt should be similar
+		
+		String output = "";
+		//loop to extract details of each module from the module array
+		for(Module mo: m)
+		{
+			output += String.format("%s %s %s %s %s%n", mo.getModuleCode(), mo.getModuleTitle(), mo.getTimeSlot(), mo.getRoom(), mo.getClassSize());
+		}
+		
 		try
 		{
 			FileWriter writer = new FileWriter("ModulesOut.txt");
