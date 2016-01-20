@@ -31,41 +31,72 @@ public class Timetable {
 	}
 	
 	//why will you want to delete a module???
+	/*
 	public void deleteModule(Module m){
 		int index = getModuleIndex(m);
 		programme[index] = null;
 		moduleCount--;
-	}
+	}*/
 	
 	//leave return type void for now. Will change it to return status of operation
+	/**
+	 * method to assign a module a time slot
+	 * @param tt is the code of the module
+	 * @param ts is the time slot to be assigned to the module
+	 */
 	public void assignModuleToTimeSlot(String tt, String ts){
 		Module m = getModuleByCode(tt);
 		m.setTimeSlot(ts);
 	}
 	
+	/**
+	 * method to remove a module from a time slot
+	 * @param tt is the code of the module
+	 * @param ts is the time slot to be removed from the module
+	 */
 	public void removeModuleFromTimeSlot(String tt, String ts){
 		Module m = getModuleByCode(tt);
 		m.setTimeSlot(null);
 	}
 	
+	/**
+	 * method to assign a room to a module
+	 * @param tt is the code of the module
+	 * @param r is the room to be assigned to the module
+	 */
 	public void addModuleToRoom(String tt, char r){
 		Module m = getModuleByCode(tt);
 		m.setRoom(r);
 	}
 	
+	/**
+	 * method to remove a room from a module
+	 * @param tt is the code of the module
+	 * @param r is the room to be removed
+	 */
 	public void removeModuleFromRoom(String tt, char r){
 		Module m = getModuleByCode(tt);
 		m.setRoom(' ');
 	}
 	
+	/**
+	 * method to get the index of a module
+	 * @param m is the module whose index position is required
+	 * @return the required index
+	 */
 	public int getModuleIndex(Module m){
 		for(int i=0; i<programme.length; i++){
 			if(programme[i].getModuleTitle() == m.getModuleTitle())
 				return i;
 		}
-		return -1;
+		return -1; //module not found
 	}
 	
+	/**
+	 * method to search for a module by its code
+	 * @param s is the code to be searched for
+	 * @return the module required
+	 */
 	public Module getModuleByCode(String s){
 		for(Module m: programme){
 			if(m.getModuleCode() == s)
@@ -74,6 +105,10 @@ public class Timetable {
 		return null;
 	}
 	
+	/**
+	 * accessor method to get all the modules in the timetable
+	 * @return an array containing all modules
+	 */
 	public Module [] getModules(){
 		return programme;
 	}
