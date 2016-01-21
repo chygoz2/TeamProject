@@ -200,11 +200,12 @@ public class TimetableGUI extends JFrame implements ActionListener{
 	 * method to update table with timetable contents
 	 */
 	private void fillTable(){
+		clearTable(); //clear the table contents
 		for(int i=0; i<m.length; i++)
 		{
 			String time = m[i].getTimeSlot();
 			char room = m[i].getRoom();
-			
+		
 			int row = getIndexForTimeSlot(time);
 			int col = getIndexForRoom(room);
 			
@@ -213,6 +214,16 @@ public class TimetableGUI extends JFrame implements ActionListener{
 			AbstractTableModel tm = (AbstractTableModel)table.getModel();
 			tm.fireTableDataChanged();
 		}
+	}
+	
+	/**
+	 * method to clear table contents
+	 */
+	private void clearTable(){
+		
+		for(int row=0; row<10; row++)
+			for(int col=1; col<9; col++)
+				rowData[row][col] = "";
 	}
 	
 	/**
@@ -298,17 +309,17 @@ public class TimetableGUI extends JFrame implements ActionListener{
 	
 	public void actionPerformed(ActionEvent e)
 	{
+		String code = (String)cb1.getSelectedItem(); 
+		String time = (String)cb2.getSelectedItem();
+		String room = (String)cb3.getSelectedItem();
+		
 		Object source = (JButton)e.getSource();
 		if(source == b2)
 		{
-			String code = (String)cb1.getSelectedItem(); 
-			String time = (String)cb2.getSelectedItem();
-			String room = (String)cb3.getSelectedItem();
-			
-			//Module m = tt.getModuleByCode(code);
-			
+	
 			if(validateInput(code, time, room))
 			{	
+				
 				Module m = tt.getModuleByCode(code);
 				m.setRoom(room.charAt(0));
 				m.setTimeSlot(time);
@@ -316,6 +327,21 @@ public class TimetableGUI extends JFrame implements ActionListener{
 				displayCourses();
 			}
 		}
+		
+		//for removal operation
+		/*
+		else if(source == b1)
+		{
+			int row = getIndexForTimeSlot(time);
+			int col = getIndexForRoom(room.charAt(0));
+		
+			tt.removeModuleFromRoom(code, room.charAt(0));
+			tt.removeModuleFromTimeSlot(code, time);
+			rowData[row][col] = "";
+			fillTable();
+			displayCourses();
+		}
+		*/
 		
 		//If the save button is clicked, calls the saveOutput() method to save the timetable data to a text file
 		else if(source == b3)
@@ -387,7 +413,7 @@ public class TimetableGUI extends JFrame implements ActionListener{
 		Module module = tt.getModuleByCode(code);
 		if(validateRoomCapacity(module, room)) //checks if the room is big enough to accommodate the class size of the module
 				if(validateCourseSubjectAndLevel(module, time)) //checks if there is another module with the same level already taking place on the time slot to be assigned
-					if(validateFreeTimeSlotAndRoom(time, room)) //checks if the selected time slot and room have another module assigned to it
+					if(validateFreeTimeSlotAndRoom(module, time, room)) //checks if the selected time slot and room have another module assigned to it
 						return true;
 		return false;
 	}
@@ -468,8 +494,13 @@ public class TimetableGUI extends JFrame implements ActionListener{
 			while(li.hasNext())
 			{
 				Module m = li.next(); //get a module in the list
+				
 				char level2 = m.getLevel(); //get the level of that module
 				String subj2 = m.getSubject(); //get the subject of that module
+				
+				//if the module to be assigned is the same as what was already there in the time slot, validation is passed. (The operation is just a case of reassignment)
+				if(m.equals(module))
+					return true;
 				
 				//if a module with the same level and subject with the new module to be assigned exists, validation fails
 				if(subj1.equals(subj2) && level1 == level2)
@@ -490,7 +521,7 @@ public class TimetableGUI extends JFrame implements ActionListener{
 	 * @param room to be checked
 	 * @return result of validation
 	 */
-	private boolean validateFreeTimeSlotAndRoom(String time, String room)
+	private boolean validateFreeTimeSlotAndRoom(Module module, String time, String room)
 	{
 		ArrayList<Module> list = tt.getModuleByTime(time); //get a list containing modules taking place at the specified time
 		if(!list.isEmpty()) //if the list is not empty
@@ -500,6 +531,10 @@ public class TimetableGUI extends JFrame implements ActionListener{
 			while(li.hasNext())
 			{
 				Module m = li.next(); //get a module in the list
+				
+				//if the module to be assigned is the same as what is already there in the time slot and room, validation is passed. (Nothing happens)
+				if(m.equals(module))
+					return true;
 				
 				//if a module with that time and room exists, validation fails
 				if(m.getRoom() == room.charAt(0))

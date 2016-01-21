@@ -58,7 +58,7 @@ public class Timetable {
 	 */
 	public void removeModuleFromTimeSlot(String tt, String ts){
 		Module m = getModuleByCode(tt);
-		m.setTimeSlot(null);
+		m.setTimeSlot("?????");
 	}
 	
 	/**
@@ -78,7 +78,7 @@ public class Timetable {
 	 */
 	public void removeModuleFromRoom(String tt, char r){
 		Module m = getModuleByCode(tt);
-		m.setRoom(' ');
+		m.setRoom('?');
 	}
 	
 	/**
@@ -119,7 +119,7 @@ public class Timetable {
 		ArrayList<Module> list = new ArrayList<Module>();
 		for(Module m: programme)
 		{
-			if(m.getTimeSlot().equals(time))
+			if(m != null && m.getTimeSlot().equals(time))
 				list.add(m);
 		}
 		return list;
