@@ -316,9 +316,10 @@ public class TimetableGUI extends JFrame implements ActionListener{
 			String time = (String)cb2.getSelectedItem();
 			String room = (String)cb3.getSelectedItem();
 			
-			if(validateInput(code, time, room))
+			Module m = tt.getModuleByCode(code);
+			
+			if(validateInput(m, time, room))
 			{	
-				Module m = tt.getModuleByCode(code);
 				m.setRoom(room.charAt(0));
 				m.setTimeSlot(time);
 				fillTable();
@@ -384,21 +385,20 @@ public class TimetableGUI extends JFrame implements ActionListener{
 		}
 	}
 	
-	
-	private boolean validateInput(String code,String time, String room)
+	/**
+	 * validates the inputs selected to check if the required criteria are met
+	 * @param module to be acted upon
+	 * @param time to be assigned to module
+	 * @param room to be assigned to module
+	 * @return validation result
+	 */
+	private boolean validateInput(Module module, String time, String room)
 	{
-		Module p = tt.getModuleByCode(code);
-		int classSize = p.getClassSize();
 		
-		int roomSize = getRoomCapacity(room);
-		if(classSize>roomSize)
-		{
-			JOptionPane.showMessageDialog(null, "Room is too small for class", "Error",
-					JOptionPane.ERROR_MESSAGE);
-			return false;
-		}	
-
-		return true;
+		if(validateRoomCapacity(module, room)) //checks if the room is big enough to accomodate the class size of the module
+				if(validateCourseLevel(module, time)) //checks if there is another module with the same level already taking place on the time slot to be assigned
+					return true;
+		return false;
 	}
 	
 	/**
@@ -438,6 +438,40 @@ public class TimetableGUI extends JFrame implements ActionListener{
 			capacity = 0;
 		}
 		return capacity;
+	}
+	
+	/**
+	 * method to check if the room to be assigned to a module can accomodate the class size
+	 * @param module that the room is to be assigned to
+	 * @param room that is to be assigned
+	 * @return result of validation
+	 */
+	private boolean validateRoomCapacity(Module module, String room)
+	{
+		int classSize = module.getClassSize();
+		int roomSize = getRoomCapacity(room);
+		if(classSize>roomSize)
+		{
+			JOptionPane.showMessageDialog(null, "Room is too small for class", "Error",
+					JOptionPane.ERROR_MESSAGE);
+			return false;
+		}	
+		return true;
+	}
+	
+	private boolean validateCourseLevel(Module module, String time)
+	{
+		char level1 = module.getLevel();
+		Module m = tt.getModuleByTime(time);
+		char level2 = m.getLevel();
+		
+		if(level1 == level2)
+		{
+			JOptionPane.showMessageDialog(null, "There is another module with the same level taking place at this the selected time slot",
+													"Error", JOptionPane.ERROR_MESSAGE);
+			return false;
+		}
+		return true;
 	}
 
 	public static void main(String [] args){

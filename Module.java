@@ -65,6 +65,15 @@ public class Module {
 	}
 	
 	/**
+	 *method to get what level a module belongs to
+	 * @return module level
+	 */
+	public char getLevel(){
+		return moduleCode.charAt(2);
+	}
+	
+	
+	/**
 	 * mutator method to modify module code
 	 * @param s 
 	 */

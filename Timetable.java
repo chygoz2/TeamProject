@@ -27,6 +27,7 @@ public class Timetable {
 										//it is converted to an integer
 		Module m = new Module(code,title,time,capacity,room); //create a module object from the variables read
 		programme[moduleCount] = m; //add the module object to the array
+		//programme.add(m);
 		moduleCount++; //increment the number of modules currently present in the timetable
 	}
 	
@@ -84,6 +85,8 @@ public class Timetable {
 	 * @param m is the module whose index position is required
 	 * @return the required index
 	 */
+	
+	
 	public int getModuleIndex(Module m){
 		for(int i=0; i<programme.length; i++){
 			if(programme[i].getModuleTitle() == m.getModuleTitle())
@@ -102,6 +105,14 @@ public class Timetable {
 			if(m.getModuleCode() == s)
 				return m;
 		}
+		return null;
+	}
+	
+	public Module getModuleByTime(String time)
+	{
+		for(Module m: programme)
+			if(m.getTimeSlot().equals(time))
+				return m;
 		return null;
 	}
 	
