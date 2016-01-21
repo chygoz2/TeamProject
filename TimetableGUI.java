@@ -180,7 +180,10 @@ public class TimetableGUI extends JFrame implements ActionListener{
 
 	}
 	
-	public void displayCourses()
+	/**
+	 * method to display the courses in the text area
+	 */
+	private void displayCourses()
 	{
 		String courses = "";
 		courses += String.format("%-10s%-10s%-8s%-8s%n", "Code","Time","Room","Size");
@@ -192,85 +195,107 @@ public class TimetableGUI extends JFrame implements ActionListener{
 		ta1.setText(courses);
 	}
 	
-	public void fillTable(){
+	/**
+	 * method to update table with timetable contents
+	 */
+	private void fillTable(){
 		for(int i=0; i<m.length; i++)
 		{
-			int row = 0, col = 0;
 			String time = m[i].getTimeSlot();
 			char room = m[i].getRoom();
-			switch(time){
-			case "MonAM":
-				row = 0;
-				break;
-			case "MonPM":
-				row = 1;
-				break;
-			case "TueAM":
-				row = 2;
-				break;
-			case "TuePM":
-				row = 3;
-				break;
-			case "WedAM":
-				row = 4;
-				break;
-			case "WedPM":
-				row = 5;
-				break;
-			case "ThuAM":
-				row = 6;
-				break;
-			case "ThuPM":
-				row = 7;
-				break;
-			case "FriAM":
-				row = 8;
-				break;
-			case "FriPM":
-				row = 9;
-				break;
-			default:
-				row = -1;
-				break;
-			}
 			
-			switch(room){
-			case 'A':
-				col = 1;
-				break;
-			case 'B':
-				col = 2;
-				break;
-			case 'C':
-				col = 3;
-				break;
-			case 'D':
-				col = 4;
-				break;
-			case 'E':
-				col = 5;
-				break;
-			case 'F':
-				col = 6;
-				break;
-			case 'G':
-				col = 7;
-				break;
-			case 'H':
-				col = 8;
-				break;
-			default:
-				col = -1;
-				break;
-			}
-			if(row != -1 || col != -1)
+			int row = getIndexForTimeSlot(time);
+			int col = getIndexForRoom(room);
+			
+			if(row != -1 && col != -1)
 				rowData[row][col] = m[i].getModuleCode();
 			AbstractTableModel tm = (AbstractTableModel)table.getModel();
 			tm.fireTableDataChanged();
 		}
 	}
 	
-	public void initializeRooms(){
+	/**
+	 * helper method to get what index a time slot belongs to 
+	 * @param ts is the time slot whose index is required
+	 * @return the required index
+	 */
+	private int getIndexForTimeSlot(String ts)
+	{
+		int row;
+		switch(ts){
+		case "MonAM":
+			row = 0;
+			break;
+		case "MonPM":
+			row = 1;
+			break;
+		case "TueAM":
+			row = 2;
+			break;
+		case "TuePM":
+			row = 3;
+			break;
+		case "WedAM":
+			row = 4;
+			break;
+		case "WedPM":
+			row = 5;
+			break;
+		case "ThuAM":
+			row = 6;
+			break;
+		case "ThuPM":
+			row = 7;
+			break;
+		case "FriAM":
+			row = 8;
+			break;
+		case "FriPM":
+			row = 9;
+			break;
+		default:
+			row = -1;
+			break;
+		}
+		return row;
+	}
+	
+	private int getIndexForRoom(char r)
+	{
+		int col;
+		switch(r){
+		case 'A':
+			col = 1;
+			break;
+		case 'B':
+			col = 2;
+			break;
+		case 'C':
+			col = 3;
+			break;
+		case 'D':
+			col = 4;
+			break;
+		case 'E':
+			col = 5;
+			break;
+		case 'F':
+			col = 6;
+			break;
+		case 'G':
+			col = 7;
+			break;
+		case 'H':
+			col = 8;
+			break;
+		default:
+			col = -1;
+			break;
+		}
+		return col;
+	}
+	
+	private void initializeRooms(){
 		rooms = new Room[8];
 		rooms[0] = new Room('A',100);
 		rooms[1] = new Room('B',100);
@@ -363,7 +388,28 @@ public class TimetableGUI extends JFrame implements ActionListener{
 		int classSize = p.getClassSize();
 		int capacity;
 		Room roomOne = rooms[7];
-		switch(m){
+	
+		int roomSize = getRoomCapacity(m);
+		if(classSize>roomSize)
+		{
+			JOptionPane warning = new JOptionPane();
+			warning.showMessageDialog(null, "Room is too small for class", "Error",
+					JOptionPane.ERROR_MESSAGE);
+			return false;
+		}	
+
+		return true;
+	}
+	
+	/**
+	 * method to get the capacity of a room
+	 * @param r is the room whose capacity is required
+	 * @return the required capacity
+	 */
+	private int getRoomCapacity(String r)
+	{
+		int capacity;
+		switch(r){
 		case "A":
 			capacity = 100;
 			break;
@@ -391,17 +437,7 @@ public class TimetableGUI extends JFrame implements ActionListener{
 		default:
 			capacity = 0;
 		}
-			
-		int roomSize = capacity;
-		if(classSize>roomSize)
-		{
-			JOptionPane warning = new JOptionPane();
-			warning.showMessageDialog(null, "Room is too small for class", "Error",
-					JOptionPane.ERROR_MESSAGE);
-			return false;
-		}	
-
-		return true;
+		return capacity;
 	}
 
 	public static void main(String [] args){
