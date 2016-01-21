@@ -72,6 +72,9 @@ public class Module {
 		return moduleCode.charAt(2);
 	}
 	
+	public String getSubject(){
+		return moduleCode.substring(0, 2);
+	}
 	
 	/**
 	 * mutator method to modify module code

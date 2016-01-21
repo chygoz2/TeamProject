@@ -5,6 +5,8 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.*;
+import java.util.ArrayList;
+import java.util.ListIterator;
 import java.util.Scanner;
 
 import javax.swing.*;
@@ -23,7 +25,6 @@ public class TimetableGUI extends JFrame implements ActionListener{
 	private JComboBox<String> cb3;
 	private JButton b1,b2,b3,b4; //b1 is remove, b2 is assign, b3 is save, b4 is exit
 	private String [][] rowData;
-	private Room [] rooms;
 	
 	/**
 	 * constructor to create a TimetableGUI object
@@ -295,18 +296,6 @@ public class TimetableGUI extends JFrame implements ActionListener{
 		return col;
 	}
 	
-	private void initializeRooms(){
-		rooms = new Room[8];
-		rooms[0] = new Room('A',100);
-		rooms[1] = new Room('B',100);
-		rooms[2] = new Room('C',60);
-		rooms[3] = new Room('D',60);
-		rooms[4] = new Room('E',60);
-		rooms[5] = new Room('F',30);
-		rooms[6] = new Room('G',30);
-		rooms[7] = new Room('H',30);
-	}
-	
 	public void actionPerformed(ActionEvent e)
 	{
 		Object source = (JButton)e.getSource();
@@ -316,10 +305,11 @@ public class TimetableGUI extends JFrame implements ActionListener{
 			String time = (String)cb2.getSelectedItem();
 			String room = (String)cb3.getSelectedItem();
 			
-			Module m = tt.getModuleByCode(code);
+			//Module m = tt.getModuleByCode(code);
 			
-			if(validateInput(m, time, room))
+			if(validateInput(code, time, room))
 			{	
+				Module m = tt.getModuleByCode(code);
 				m.setRoom(room.charAt(0));
 				m.setTimeSlot(time);
 				fillTable();
@@ -392,12 +382,13 @@ public class TimetableGUI extends JFrame implements ActionListener{
 	 * @param room to be assigned to module
 	 * @return validation result
 	 */
-	private boolean validateInput(Module module, String time, String room)
+	private boolean validateInput(String code, String time, String room)
 	{
-		
-		if(validateRoomCapacity(module, room)) //checks if the room is big enough to accomodate the class size of the module
-				if(validateCourseLevel(module, time)) //checks if there is another module with the same level already taking place on the time slot to be assigned
-					return true;
+		Module module = tt.getModuleByCode(code);
+		if(validateRoomCapacity(module, room)) //checks if the room is big enough to accommodate the class size of the module
+				if(validateCourseSubjectAndLevel(module, time)) //checks if there is another module with the same level already taking place on the time slot to be assigned
+					if(validateFreeTimeSlotAndRoom(time, room)) //checks if the selected time slot and room have another module assigned to it
+						return true;
 		return false;
 	}
 	
@@ -459,20 +450,70 @@ public class TimetableGUI extends JFrame implements ActionListener{
 		return true;
 	}
 	
-	private boolean validateCourseLevel(Module module, String time)
+	/**
+	 * method to check if the time to be assigned to a module already has another module with the same subject and year
+	 * @param module that the time is to be assigned to
+	 * @param time that is to be assigned
+	 * @return result of validation
+	 */
+	private boolean validateCourseSubjectAndLevel(Module module, String time)
 	{
-		char level1 = module.getLevel();
-		Module m = tt.getModuleByTime(time);
-		char level2 = m.getLevel();
-		
-		if(level1 == level2)
+		char level1 = module.getLevel(); //get the level of the course to be added
+		String subj1 = module.getSubject(); //get the subject of the course to be added
+		ArrayList<Module> list = tt.getModuleByTime(time); //get a list containing modules taking place at the specified time
+		if(!list.isEmpty()) //if the list is not empty
 		{
-			JOptionPane.showMessageDialog(null, "There is another module with the same level taking place at this the selected time slot",
-													"Error", JOptionPane.ERROR_MESSAGE);
-			return false;
+			//iterate through the list
+			ListIterator<Module> li = list.listIterator(); 
+			while(li.hasNext())
+			{
+				Module m = li.next(); //get a module in the list
+				char level2 = m.getLevel(); //get the level of that module
+				String subj2 = m.getSubject(); //get the subject of that module
+				
+				//if a module with the same level and subject with the new module to be assigned exists, validation fails
+				if(subj1.equals(subj2) && level1 == level2)
+				{
+					JOptionPane.showMessageDialog(null, "There is another module with the same subject and year taking place at this the selected time slot",
+															"Error", JOptionPane.ERROR_MESSAGE);
+					return false;
+				}
+			}
 		}
 		return true;
+		
 	}
+	
+	/**
+	 * method to check if the chosen time slot and room is not occupied
+	 * @param time to be checked
+	 * @param room to be checked
+	 * @return result of validation
+	 */
+	private boolean validateFreeTimeSlotAndRoom(String time, String room)
+	{
+		ArrayList<Module> list = tt.getModuleByTime(time); //get a list containing modules taking place at the specified time
+		if(!list.isEmpty()) //if the list is not empty
+		{
+			//iterate through the list
+			ListIterator<Module> li = list.listIterator(); 
+			while(li.hasNext())
+			{
+				Module m = li.next(); //get a module in the list
+				
+				//if a module with that time and room exists, validation fails
+				if(m.getRoom() == room.charAt(0))
+				{
+					JOptionPane.showMessageDialog(null, "There is another module at the selected time and room. Please remove that module first or choose another time or room.",
+															"Error", JOptionPane.ERROR_MESSAGE);
+					return false;
+				}
+			}
+		}
+		
+		return true;
+	}
+	
 
 	public static void main(String [] args){
 		JFrame f = new TimetableGUI();

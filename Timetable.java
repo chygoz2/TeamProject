@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 
 public class Timetable {
 
@@ -108,12 +109,20 @@ public class Timetable {
 		return null;
 	}
 	
-	public Module getModuleByTime(String time)
+	/**
+	 * method to search for module(s) assigned to a particular time slot
+	 * @param t is the time to be searched for
+	 * @return the modules if any
+	 */
+	public ArrayList<Module> getModuleByTime(String time)
 	{
+		ArrayList<Module> list = new ArrayList<Module>();
 		for(Module m: programme)
+		{
 			if(m.getTimeSlot().equals(time))
-				return m;
-		return null;
+				list.add(m);
+		}
+		return list;
 	}
 	
 	/**
