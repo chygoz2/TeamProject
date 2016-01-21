@@ -317,22 +317,24 @@ public class TimetableGUI extends JFrame implements ActionListener{
 			String room = (String)cb3.getSelectedItem();
 			
 			if(validateInput(code, time, room))
-				{	
+			{	
 				Module m = tt.getModuleByCode(code);
 				m.setRoom(room.charAt(0));
 				m.setTimeSlot(time);
 				fillTable();
 				displayCourses();
-				}
+			}
 		}
 		
-		//If the save button is clicked, calls the saveOutput() method to save the timetable data to a textfile
+		//If the save button is clicked, calls the saveOutput() method to save the timetable data to a text file
 		else if(source == b3)
 			saveOutput();
 		
-		//If the quit button is pressed, will ask the user if they have saved the timetable first.
-		//If they click YES, quit the program. Else if NO is pressed, will ask the user if they wish to save the timetable.
-		//If Yes is clicked, saves the timetable and quits the program. Else, quits the program without saving
+		/*
+		  If the quit button is pressed, will ask the user if they have saved the timetable first.
+		  If they click YES, quit the program. Else if NO is pressed, will ask the user if they wish to save the timetable.
+		  If Yes is clicked, saves the timetable and quits the program. Else, quits the program without saving
+		*/
 		else if(source == b4)
 		{
 			int confirm = JOptionPane.showConfirmDialog(null, "You are about to exit the program. Have you saved the timetable first?", "Exit Program?",  JOptionPane.YES_NO_CANCEL_OPTION);
@@ -382,18 +384,16 @@ public class TimetableGUI extends JFrame implements ActionListener{
 		}
 	}
 	
-	private boolean validateInput(String c,String t, String m)
-	{
-		Module p = tt.getModuleByCode(c);
-		int classSize = p.getClassSize();
-		int capacity;
-		Room roomOne = rooms[7];
 	
-		int roomSize = getRoomCapacity(m);
+	private boolean validateInput(String code,String time, String room)
+	{
+		Module p = tt.getModuleByCode(code);
+		int classSize = p.getClassSize();
+		
+		int roomSize = getRoomCapacity(room);
 		if(classSize>roomSize)
 		{
-			JOptionPane warning = new JOptionPane();
-			warning.showMessageDialog(null, "Room is too small for class", "Error",
+			JOptionPane.showMessageDialog(null, "Room is too small for class", "Error",
 					JOptionPane.ERROR_MESSAGE);
 			return false;
 		}	
