@@ -165,7 +165,14 @@ public class TimetableGUI extends JFrame implements ActionListener{
 			Scanner scanner = new Scanner(reader);
 			while(scanner.hasNextLine()){
 				String line = scanner.nextLine();
-				tt.addModule(line);
+				//only allow a maximum number of 24 modules to be added
+				if(tt.getModuleCount() > 23)
+				{
+					JOptionPane.showMessageDialog(null,"The maximum number of modules allowed is 24", "Error", JOptionPane.ERROR_MESSAGE);
+					break;
+				}
+				else
+					tt.addModule(line);
 			}
 
 			reader.close();
@@ -189,9 +196,12 @@ public class TimetableGUI extends JFrame implements ActionListener{
 		String courses = "";
 		courses += String.format("%-10s%-10s%-8s%-8s%n", "Code","Time","Room","Size");
 		for(int i=0; i<m.length; i++){
-			courses += String.format("%-10s%-10s%-8s%-8s%n", m[i].getModuleCode(), m[i].getTimeSlot(),
-					m[i].getRoom(), m[i].getClassSize());
-			cb1.addItem(m[i].getModuleCode());
+			if(m[i] != null)
+			{
+				courses += String.format("%-10s%-10s%-8s%-8s%n", m[i].getModuleCode(), m[i].getTimeSlot(),
+						m[i].getRoom(), m[i].getClassSize());
+				cb1.addItem(m[i].getModuleCode());
+			}
 		}
 		ta1.setText(courses);
 	}
@@ -203,16 +213,19 @@ public class TimetableGUI extends JFrame implements ActionListener{
 		clearTable(); //clear the table contents
 		for(int i=0; i<m.length; i++)
 		{
-			String time = m[i].getTimeSlot();
-			char room = m[i].getRoom();
-		
-			int row = getIndexForTimeSlot(time);
-			int col = getIndexForRoom(room);
+			if(m[i] != null)
+			{
+				String time = m[i].getTimeSlot();
+				char room = m[i].getRoom();
 			
-			if(row != -1 && col != -1)
-				rowData[row][col] = m[i].getModuleCode();
-			AbstractTableModel tm = (AbstractTableModel)table.getModel();
-			tm.fireTableDataChanged();
+				int row = getIndexForTimeSlot(time);
+				int col = getIndexForRoom(room);
+				
+				if(row != -1 && col != -1)
+					rowData[row][col] = m[i].getModuleCode();
+				AbstractTableModel tm = (AbstractTableModel)table.getModel();
+				tm.fireTableDataChanged();
+			}
 		}
 	}
 	
@@ -386,7 +399,8 @@ public class TimetableGUI extends JFrame implements ActionListener{
 		//loop to extract details of each module from the module array
 		for(Module mo: m)
 		{
-			output += String.format("%s %s %s %s %s%n", mo.getModuleCode(), mo.getModuleTitle(), mo.getTimeSlot(), mo.getRoom(), mo.getClassSize());
+			if(mo != null)
+				output += String.format("%s %s %s %s %s%n", mo.getModuleCode(), mo.getModuleTitle(), mo.getTimeSlot(), mo.getRoom(), mo.getClassSize());
 		}
 		
 		try

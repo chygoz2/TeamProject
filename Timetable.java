@@ -90,7 +90,7 @@ public class Timetable {
 	
 	public int getModuleIndex(Module m){
 		for(int i=0; i<programme.length; i++){
-			if(programme[i].getModuleTitle() == m.getModuleTitle())
+			if(programme[i] != null && programme[i].getModuleTitle() == m.getModuleTitle())
 				return i;
 		}
 		return -1; //module not found
@@ -103,7 +103,7 @@ public class Timetable {
 	 */
 	public Module getModuleByCode(String s){
 		for(Module m: programme){
-			if(m.getModuleCode() == s)
+			if(m != null && m.getModuleCode() == s)
 				return m;
 		}
 		return null;
@@ -131,5 +131,12 @@ public class Timetable {
 	 */
 	public Module [] getModules(){
 		return programme;
+	}
+
+	/**
+	 * @return the moduleCount
+	 */
+	public int getModuleCount() {
+		return moduleCount;
 	}
 }
