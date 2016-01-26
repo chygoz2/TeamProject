@@ -8,7 +8,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.*;
 import java.util.ArrayList;
-import java.util.ListIterator;
 import java.util.Scanner;
 
 import javax.swing.*;
@@ -69,7 +68,7 @@ public class TimetableGUI extends JFrame implements ActionListener, WindowListen
 		setLayout(grid);
 		*/
 		
-		String [] columnNames = {" ","A","B","C","D","E","F","G","H"}; //correspond to the names of columns
+		String [] columnNames = {" ","A(100)","B(100)","C(60)","D(60)","E(60)","F(30)","G(30)","H(30)"}; //correspond to the names of columns
 
 		rowData = new String[10][9]; //creates a String array object to hold table data
 		//fills the first column of each row of the table with the specified time slots
@@ -342,6 +341,9 @@ public class TimetableGUI extends JFrame implements ActionListener, WindowListen
 		return col;
 	}
 	
+	/**
+	 * method to handle event generated when any of the buttons is clicked
+	 */
 	public void actionPerformed(ActionEvent e)
 	{
 		String code = (String)cb1.getSelectedItem(); 
@@ -378,6 +380,9 @@ public class TimetableGUI extends JFrame implements ActionListener, WindowListen
 		}
 	}
 	
+	/**
+	 * method that handles what happens when the quit button or the window close button is clicked.
+	 */
 	private void handleQuitButton(){
 		int confirm = JOptionPane.showConfirmDialog(null, "You are about to exit the program. Have you saved the timetable first?", "Exit Program?",  JOptionPane.YES_NO_CANCEL_OPTION);
 		
@@ -394,6 +399,7 @@ public class TimetableGUI extends JFrame implements ActionListener, WindowListen
 			}
 			else
 				System.exit(0);
+				
 		}
 	}
 	
@@ -509,32 +515,23 @@ public class TimetableGUI extends JFrame implements ActionListener, WindowListen
 		char level1 = module.getLevel(); //get the level of the course to be added
 		String subj1 = module.getSubject(); //get the subject of the course to be added
 		ArrayList<Module> list = tt.getModuleByTime(time); //get a list containing modules taking place at the specified time
-		if(!list.isEmpty()) //if the list is not empty
-		{
-			//iterate through the list
-			ListIterator<Module> li = list.listIterator(); 
-			while(li.hasNext())
+		for(Module mo: list){
+			char level2 = mo.getLevel(); //get the level of that module
+			String subj2 = mo.getSubject(); //get the subject of that module
+			
+			//if the module to be assigned is the same as what was already there in the time slot, validation is passed. (The operation is just a case of reassignment)
+			if(m.equals(module))
+				return true;
+			
+			//if a module with the same level and subject with the new module to be assigned exists, validation fails
+			if(subj1.equals(subj2) && level1 == level2)
 			{
-				Module m = li.next(); //get a module in the list
-				
-				char level2 = m.getLevel(); //get the level of that module
-				String subj2 = m.getSubject(); //get the subject of that module
-				
-				//if the module to be assigned is the same as what was already there in the time slot, validation is passed. (The operation is just a case of reassignment)
-				if(m.equals(module))
-					return true;
-				
-				//if a module with the same level and subject with the new module to be assigned exists, validation fails
-				if(subj1.equals(subj2) && level1 == level2)
-				{
-					JOptionPane.showMessageDialog(null, "There is another module with the same subject and year taking place at this the selected time slot",
-															"Error", JOptionPane.ERROR_MESSAGE);
-					return false;
-				}
+				JOptionPane.showMessageDialog(null, "There is another module with the same subject and year taking place at this the selected time slot",
+														"Error", JOptionPane.ERROR_MESSAGE);
+				return false;
 			}
 		}
 		return true;
-		
 	}
 	
 	/**
@@ -549,17 +546,13 @@ public class TimetableGUI extends JFrame implements ActionListener, WindowListen
 		if(!list.isEmpty()) //if the list is not empty
 		{
 			//iterate through the list
-			ListIterator<Module> li = list.listIterator(); 
-			while(li.hasNext())
-			{
-				Module m = li.next(); //get a module in the list
-				
+			for(Module mo: list){
 				//if the module to be assigned is the same as what is already there in the time slot and room, validation is passed. (Nothing happens)
-				if(m.equals(module))
+				if(mo.equals(module))
 					return true;
 				
 				//if a module with that time and room exists, validation fails
-				if(m.getRoom() == room.charAt(0))
+				if(mo.getRoom() == room.charAt(0))
 				{
 					JOptionPane.showMessageDialog(null, "There is another module at the selected time and room. Please remove that module first or choose another time or room.",
 															"Error", JOptionPane.ERROR_MESSAGE);
@@ -567,57 +560,34 @@ public class TimetableGUI extends JFrame implements ActionListener, WindowListen
 				}
 			}
 		}
-		
 		return true;
 	}
 	
-
-	public static void main(String [] args){
-		JFrame f = new TimetableGUI();
-		f.setVisible(true);
-	}
-
 	@Override
-	public void windowActivated(WindowEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void windowClosed(WindowEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
+	/**
+	 * method to trigger the checks to be done before the program can be closed.
+	 */
 	public void windowClosing(WindowEvent arg0) {
-		// TODO Auto-generated method stub
 		handleQuitButton();
-		
 	}
+	
+	//the methods below were inherited from the WindowListener interface and were not needed
+	@Override
+	public void windowActivated(WindowEvent arg0) {}
+	
+	@Override
+	public void windowClosed(WindowEvent arg0) {}
 
 	@Override
-	public void windowDeactivated(WindowEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void windowDeactivated(WindowEvent arg0) {}
 
 	@Override
-	public void windowDeiconified(WindowEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void windowDeiconified(WindowEvent arg0) {}
 
 	@Override
-	public void windowIconified(WindowEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void windowIconified(WindowEvent arg0) {}
 
 	@Override
-	public void windowOpened(WindowEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void windowOpened(WindowEvent arg0) {}
 	
 }
