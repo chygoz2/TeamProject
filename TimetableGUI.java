@@ -86,7 +86,13 @@ public class TimetableGUI extends JFrame implements ActionListener, WindowListen
 		JPanel p5 = new JPanel();
 		JPanel p6 = new JPanel();
 		
-		table = new JTable(rowData,columnNames);
+		table = new JTable(rowData,columnNames)
+				{
+					@Override public boolean isCellEditable(int row, int col)
+					{
+						return false;
+					}
+				};
 		//Prevents column headers from being rearranged
 		table.getTableHeader().setReorderingAllowed(false);
 		table.setPreferredScrollableViewportSize(new Dimension(600, 250));
