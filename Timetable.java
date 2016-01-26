@@ -4,13 +4,12 @@ public class Timetable {
 
 	//instance variables
 	private ArrayList<Module> programme;
-	//private final int SIZE = 24;
 	
 	private int moduleCount;
 	
 	public Timetable(){
 		// default constructor
-		//programme = new Module[SIZE];
+		programme = new ArrayList<Module>();
 		moduleCount = 0;
 	}
 	
@@ -28,20 +27,10 @@ public class Timetable {
 		int capacity = Integer.parseInt(token[4]); //element at index 4 of token will be the number of people enrolled in the module.
 										//it is converted to an integer
 		Module m = new Module(code,title,time,capacity,room); //create a module object from the variables read
-		programme.add(m); //add the module object to the array
-		//programme.add(m);
+		programme.add(m); //add the module object to the arraylist
 		moduleCount++; //increment the number of modules currently present in the timetable
 	}
 	
-	//why will you want to delete a module???
-	/*
-	public void deleteModule(Module m){
-		int index = getModuleIndex(m);
-		programme[index] = null;
-		moduleCount--;
-	}*/
-	
-	//leave return type void for now. Will change it to return status of operation
 	/**
 	 * method to assign a module a time slot
 	 * @param tt is the code of the module
@@ -80,29 +69,6 @@ public class Timetable {
 	public void removeModuleFromRoom(String tt, char r){
 		Module m = getModuleByCode(tt);
 		m.setRoom('?');
-	}
-	
-	/**
-	 * method to get the index of a module
-	 * @param m is the module whose index position is required
-	 * @return the required index
-	 */
-	
-	
-	public int getModuleIndex(Module m){
-		int i = 0;
-		/*for(int i=0; i<programme.length; i++){
-			if(programme[i] != null && programme[i].getModuleTitle() == m.getModuleTitle())
-				return i;
-		}*/
-		for(Module mo: programme){
-			if(mo != null && mo.getModuleTitle() == m.getModuleTitle())
-				return i;
-			else
-				i++;
-				
-		}
-		return -1; //module not found
 	}
 	
 	/**

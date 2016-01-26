@@ -42,7 +42,6 @@ public class TimetableGUI extends JFrame implements ActionListener{
 	public TimetableGUI(){
 		tt = new Timetable();
 		m = tt.getModules();
-		//initializeRooms(); may not be needed
 		
 		if(readFile()) //if ModulesIn.txt file can be read and opened, lay out components
 		{
@@ -178,13 +177,6 @@ public class TimetableGUI extends JFrame implements ActionListener{
 			Scanner scanner = new Scanner(reader);
 			while(scanner.hasNextLine()){
 				String line = scanner.nextLine();
-				//only allow a maximum number of 24 modules to be added
-				if(tt.getModuleCount() > 23)
-				{
-					JOptionPane.showMessageDialog(null,"The maximum number of modules allowed is 24", "Error", JOptionPane.ERROR_MESSAGE);
-					break;
-				}
-				else
 					tt.addModule(line);
 			}
 
@@ -216,15 +208,6 @@ public class TimetableGUI extends JFrame implements ActionListener{
 			}
 		}
 		
-		/*for(int i=0; i<m.length; i++){
-			if(m[i] != null)
-			{
-				courses += String.format("%-10s%-10s%-8s%-8s%n", m[i].getModuleCode(), m[i].getTimeSlot(),
-						m[i].getRoom(), m[i].getClassSize());
-				cb1.addItem(m[i].getModuleCode());
-			}
-		}*/
-		
 		ta1.setText(courses);
 	}
 	
@@ -233,18 +216,17 @@ public class TimetableGUI extends JFrame implements ActionListener{
 	 */
 	private void fillTable(){
 		clearTable(); //clear the table contents
-		for(int i=0; i<m.length; i++)
-		{
-			if(m[i] != null)
-			{
-				String time = m[i].getTimeSlot();
-				char room = m[i].getRoom();
+		
+		for(Module mo: m){
+			if(mo != null){
+				String time = mo.getTimeSlot();
+				char room = mo.getRoom();
 			
 				int row = getIndexForTimeSlot(time);
 				int col = getIndexForRoom(room);
 				
 				if(row != -1 && col != -1)
-					rowData[row][col] = m[i].getModuleCode();
+					rowData[row][col] = mo.getModuleCode();
 				AbstractTableModel tm = (AbstractTableModel)table.getModel();
 				tm.fireTableDataChanged();
 			}
@@ -363,21 +345,6 @@ public class TimetableGUI extends JFrame implements ActionListener{
 			}
 		}
 		
-		//for removal operation
-		/*
-		else if(source == b1)
-		{
-			int row = getIndexForTimeSlot(time);
-			int col = getIndexForRoom(room.charAt(0));
-		
-			tt.removeModuleFromRoom(code, room.charAt(0));
-			tt.removeModuleFromTimeSlot(code, time);
-			rowData[row][col] = "";
-			fillTable();
-			displayCourses();
-		}
-		*/
-		
 		//If the save button is clicked, calls the saveOutput() method to save the timetable data to a text file
 		else if(source == b3)
 			saveOutput();
@@ -413,9 +380,6 @@ public class TimetableGUI extends JFrame implements ActionListener{
 	 */
 	private void saveOutput()
 	{
-		//String output = ta1.getText(); 
-		//had to modify the output variable because the format of text in the text area and the format in the moduleIn.txt file are not the same
-		//whereas according to the specification, the format of ModulesIn.txt and ModulesOut.txt should be similar
 		
 		String output = "";
 		//loop to extract details of each module from the module array
