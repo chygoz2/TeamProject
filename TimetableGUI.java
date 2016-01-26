@@ -1,6 +1,8 @@
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
@@ -13,7 +15,7 @@ import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableColumn;
 
-public class TimetableGUI extends JFrame implements ActionListener{
+public class TimetableGUI extends JFrame implements ActionListener, WindowListener{
 
 	//instance variables
 	private Timetable tt;
@@ -61,7 +63,7 @@ public class TimetableGUI extends JFrame implements ActionListener{
 		setTitle("Timetable");
 		setSize(650,500);
 		setLocation(350,100);
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		/*
 		GridLayout grid = new GridLayout(2,2);
 		setLayout(grid);
@@ -138,6 +140,7 @@ public class TimetableGUI extends JFrame implements ActionListener{
 		b2.addActionListener(this);
 		b3.addActionListener(this);
 		b4.addActionListener(this);
+		this.addWindowListener(this);
 
 		p3.add(l1); p3.add(cb1);
 		p3.add(l2); p3.add(cb2);
@@ -356,22 +359,26 @@ public class TimetableGUI extends JFrame implements ActionListener{
 		*/
 		else if(source == b4)
 		{
-			int confirm = JOptionPane.showConfirmDialog(null, "You are about to exit the program. Have you saved the timetable first?", "Exit Program?",  JOptionPane.YES_NO_CANCEL_OPTION);
+			handleQuitButton();
+		}
+	}
+	
+	private void handleQuitButton(){
+		int confirm = JOptionPane.showConfirmDialog(null, "You are about to exit the program. Have you saved the timetable first?", "Exit Program?",  JOptionPane.YES_NO_CANCEL_OPTION);
+		
+		if(confirm == JOptionPane.YES_OPTION)
+			System.exit(0);
+		else if(confirm == JOptionPane.NO_OPTION)
+		{
+			int confirm2 = JOptionPane.showConfirmDialog(null, "Would you like to save the timetable?", "Exit Program?", JOptionPane.YES_NO_OPTION);
 			
-			if(confirm == JOptionPane.YES_OPTION)
-				System.exit(0);
-			else if(confirm == JOptionPane.NO_OPTION)
+			if(confirm2 == JOptionPane.YES_OPTION)
 			{
-				int confirm2 = JOptionPane.showConfirmDialog(null, "Would you like to save the timetable?", "Exit Program?", JOptionPane.YES_NO_OPTION);
-				
-				if(confirm2 == JOptionPane.YES_OPTION)
-				{
-					saveOutput();
-					System.exit(0);
-				}
-				else
-					System.exit(0);
+				saveOutput();
+				System.exit(0);
 			}
+			else
+				System.exit(0);
 		}
 	}
 	
@@ -553,6 +560,49 @@ public class TimetableGUI extends JFrame implements ActionListener{
 	public static void main(String [] args){
 		JFrame f = new TimetableGUI();
 		f.setVisible(true);
+	}
+
+	@Override
+	public void windowActivated(WindowEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void windowClosed(WindowEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void windowClosing(WindowEvent arg0) {
+		// TODO Auto-generated method stub
+		handleQuitButton();
+		
+	}
+
+	@Override
+	public void windowDeactivated(WindowEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void windowDeiconified(WindowEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void windowIconified(WindowEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void windowOpened(WindowEvent arg0) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 }
