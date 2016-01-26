@@ -571,6 +571,12 @@ public class TimetableGUI extends JFrame implements ActionListener, WindowListen
 		handleQuitButton();
 	}
 	
+	public static void main(String[] args)
+	{
+		JFrame f = new TimetableGUI();
+		f.setVisible(true);
+	}
+	
 	//the methods below were inherited from the WindowListener interface and were not needed
 	@Override
 	public void windowActivated(WindowEvent arg0) {}
