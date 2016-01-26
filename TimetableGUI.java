@@ -61,7 +61,7 @@ public class TimetableGUI extends JFrame implements ActionListener, WindowListen
 	private void layoutGUIComponents()
 	{
 		setTitle("Timetable");
-		setSize(650,500);
+		setSize(925,585);
 		setLocation(350,100);
 		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		/*
@@ -83,6 +83,8 @@ public class TimetableGUI extends JFrame implements ActionListener, WindowListen
 		JPanel p2 = new JPanel();
 		JPanel p3 = new JPanel();
 		JPanel p4 = new JPanel();
+		JPanel p5 = new JPanel();
+		JPanel p6 = new JPanel();
 		
 		table = new JTable(rowData,columnNames);
 		//Prevents column headers from being rearranged
@@ -91,10 +93,10 @@ public class TimetableGUI extends JFrame implements ActionListener, WindowListen
 		JScrollPane sP = new JScrollPane(table);
 
 		
-		GridLayout grid2 = new GridLayout(1,1);
+		GridLayout grid2 = new GridLayout(2,1);
 		p1.setLayout(grid2);
 		
-		p1.add(sP);
+		p1.add(sP, BorderLayout.NORTH);
 
 		//p1.add(sP);
 		//p1.add(p3);
@@ -153,6 +155,13 @@ public class TimetableGUI extends JFrame implements ActionListener, WindowListen
 		p4.setLayout(grid4);
 		p4.add(p3);
 		
+		GridLayout grid6 = new GridLayout(1,2);
+		p6.setLayout(grid6);
+		p6.add(p4);
+		p6.add(p5);
+		
+		p1.add(p6, BorderLayout.SOUTH);
+		
 		TableColumn tc = table.getColumnModel().getColumn(0);
 		tc.setPreferredWidth(90);
 		table.setRowHeight(25);
@@ -166,8 +175,8 @@ public class TimetableGUI extends JFrame implements ActionListener, WindowListen
 		p2.add(textPane);
 		p4.add(p2);
 
-		add(p1, BorderLayout.NORTH);
-		add(p4);
+		add(p1, BorderLayout.WEST);
+		add(p2, BorderLayout.EAST);
 	}
 
 	/**
