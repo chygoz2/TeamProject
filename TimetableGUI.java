@@ -51,7 +51,10 @@ public class TimetableGUI extends JFrame implements ActionListener{
 			fillTable();
 		}
 		else //otherwise terminate program
+		{	
+			JOptionPane.showMessageDialog(null, "No text file to read. Exiting program...", "Error: No Input File", JOptionPane.ERROR_MESSAGE);
 			System.exit(0);
+		}
 	}
 	
 	private void layoutGUIComponents()
