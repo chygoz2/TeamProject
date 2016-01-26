@@ -17,7 +17,7 @@ public class TimetableGUI extends JFrame implements ActionListener{
 
 	//instance variables
 	private Timetable tt;
-	private Module [] m;
+	private ArrayList<Module> m;
 	private JTable table;
 	private JTextArea ta1;
 	private JComboBox<String> cb1;
@@ -208,14 +208,23 @@ public class TimetableGUI extends JFrame implements ActionListener{
 	{
 		String courses = "";
 		courses += String.format("%-10s%-10s%-8s%-8s%n", "Code","Time","Room","Size");
-		for(int i=0; i<m.length; i++){
+		for(Module mo: m){
+			if(m != null){
+				courses += String.format("%-10s%-10s%-8s%-8s%n", mo.getModuleCode(), mo.getTimeSlot(),
+						mo.getRoom(), mo.getClassSize());
+				cb1.addItem(mo.getModuleCode());
+			}
+		}
+		
+		/*for(int i=0; i<m.length; i++){
 			if(m[i] != null)
 			{
 				courses += String.format("%-10s%-10s%-8s%-8s%n", m[i].getModuleCode(), m[i].getTimeSlot(),
 						m[i].getRoom(), m[i].getClassSize());
 				cb1.addItem(m[i].getModuleCode());
 			}
-		}
+		}*/
+		
 		ta1.setText(courses);
 	}
 	

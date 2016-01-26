@@ -3,13 +3,14 @@ import java.util.ArrayList;
 public class Timetable {
 
 	//instance variables
-	private Module [] programme;
-	private final int SIZE = 24;
+	private ArrayList<Module> programme;
+	//private final int SIZE = 24;
+	
 	private int moduleCount;
 	
 	public Timetable(){
 		// default constructor
-		programme = new Module[SIZE];
+		//programme = new Module[SIZE];
 		moduleCount = 0;
 	}
 	
@@ -27,7 +28,7 @@ public class Timetable {
 		int capacity = Integer.parseInt(token[4]); //element at index 4 of token will be the number of people enrolled in the module.
 										//it is converted to an integer
 		Module m = new Module(code,title,time,capacity,room); //create a module object from the variables read
-		programme[moduleCount] = m; //add the module object to the array
+		programme.add(m); //add the module object to the array
 		//programme.add(m);
 		moduleCount++; //increment the number of modules currently present in the timetable
 	}
@@ -89,9 +90,17 @@ public class Timetable {
 	
 	
 	public int getModuleIndex(Module m){
-		for(int i=0; i<programme.length; i++){
+		int i = 0;
+		/*for(int i=0; i<programme.length; i++){
 			if(programme[i] != null && programme[i].getModuleTitle() == m.getModuleTitle())
 				return i;
+		}*/
+		for(Module mo: programme){
+			if(mo != null && mo.getModuleTitle() == m.getModuleTitle())
+				return i;
+			else
+				i++;
+				
 		}
 		return -1; //module not found
 	}
@@ -129,7 +138,7 @@ public class Timetable {
 	 * accessor method to get all the modules in the timetable
 	 * @return an array containing all modules
 	 */
-	public Module [] getModules(){
+	public ArrayList<Module> getModules(){
 		return programme;
 	}
 
