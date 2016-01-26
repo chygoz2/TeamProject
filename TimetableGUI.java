@@ -26,6 +26,16 @@ public class TimetableGUI extends JFrame implements ActionListener{
 	private JButton b1,b2,b3,b4; //b1 is remove, b2 is assign, b3 is save, b4 is exit
 	private String [][] rowData;
 	
+	//room capacities
+	private static final int ROOM_A_SIZE = 100;
+	private static final int ROOM_B_SIZE = 100;
+	private static final int ROOM_C_SIZE = 60;
+	private static final int ROOM_D_SIZE = 60;
+	private static final int ROOM_E_SIZE = 60;
+	private static final int ROOM_F_SIZE = 30;
+	private static final int ROOM_G_SIZE = 30;
+	private static final int ROOM_H_SIZE = 30;
+	
 	/**
 	 * constructor to create a TimetableGUI object
 	 */
@@ -442,28 +452,28 @@ public class TimetableGUI extends JFrame implements ActionListener{
 		int capacity;
 		switch(r){
 		case "A":
-			capacity = 100;
+			capacity = ROOM_A_SIZE;
 			break;
 		case "B":
-			capacity = 100;
+			capacity = ROOM_B_SIZE;
 			break;
 		case "C":
-			capacity = 60;
+			capacity = ROOM_C_SIZE;
 			break;
 		case "D":
-			capacity = 60;
+			capacity = ROOM_D_SIZE;
 			break;
 		case "E":
-			capacity = 60;
+			capacity = ROOM_E_SIZE;
 			break;
 		case "F":
-			capacity = 30;
+			capacity = ROOM_F_SIZE;
 			break;
 		case "G":
-			capacity = 30;
+			capacity = ROOM_G_SIZE;
 			break;
 		case "H":
-			capacity = 30;
+			capacity = ROOM_H_SIZE;
 			break;
 		default:
 			capacity = 0;
