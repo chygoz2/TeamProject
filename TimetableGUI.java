@@ -4,14 +4,12 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Scanner;
+import java.util.*;
 
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
+import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumn;
 
 public class TimetableGUI extends JFrame implements ActionListener, WindowListener{
@@ -37,6 +35,9 @@ public class TimetableGUI extends JFrame implements ActionListener, WindowListen
 	private static final int ROOM_G_SIZE = 30;
 	private static final int ROOM_H_SIZE = 30;
 	
+	private final String inputFile = "ModulesIn.txt";
+	private final String outputFile = "ModulesOut.txt";
+	
 	/**
 	 * constructor to create a TimetableGUI object
 	 */
@@ -59,16 +60,15 @@ public class TimetableGUI extends JFrame implements ActionListener, WindowListen
 	
 	private void layoutGUIComponents()
 	{
-		setTitle("Timetable");
-		setSize(925,585);
-		setLocation(350,100);
-		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-		/*
-		GridLayout grid = new GridLayout(2,2);
-		setLayout(grid);
-		*/
-		
-		String [] columnNames = {" ","A(100)","B(100)","C(60)","D(60)","E(60)","F(30)","G(30)","H(30)"}; //correspond to the names of columns
+		setTitle("MIT Timetabling Assistant"); //set the title of the window
+		setSize(925,585); //sets the window dimensions
+		setLocation(350,100); //sets the window location
+		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE); 
+		addWindowListener(this); //to enable a customized operation when the close button of the JFrame is clicked
+		setResizable(false); //disables resizing of window
+	
+		String [] columnNames = {" ","A(100)","B(100)","C(60)","D(60)","E(60)","F(30)","G(30)","H(30)"}; //correspond to the names of columns. 
+							//The numbers in brackets represent room capacities
 
 		rowData = new String[10][9]; //creates a String array object to hold table data
 		//fills the first column of each row of the table with the specified time slots
@@ -78,6 +78,7 @@ public class TimetableGUI extends JFrame implements ActionListener, WindowListen
 		rowData[6][0] = "ThuAM";	rowData[7][0] = "ThuPM";
 		rowData[8][0] = "FriAM";	rowData[9][0] = "FriPM";
 
+		//panels to be used for component placement
 		JPanel p1 = new JPanel();
 		JPanel p2 = new JPanel();
 		JPanel p3 = new JPanel();
@@ -85,26 +86,29 @@ public class TimetableGUI extends JFrame implements ActionListener, WindowListen
 		JPanel p5 = new JPanel();
 		JPanel p6 = new JPanel();
 		
+		
 		table = new JTable(rowData,columnNames)
 				{
+					//prevent cell from being editable
 					@Override public boolean isCellEditable(int row, int col)
 					{
 						return false;
 					}
 				};
-		//Prevents column headers from being rearranged
-		table.getTableHeader().setReorderingAllowed(false);
+		table.setRowHeight(25); //sets the height of each table row
+		//Prevents column headers from being rearranged or resized
+		JTableHeader th = table.getTableHeader();
+		th.setReorderingAllowed(false);
+		th.setResizingAllowed(false);
 		table.setPreferredScrollableViewportSize(new Dimension(600, 250));
-		JScrollPane sP = new JScrollPane(table);
-
 		
+		JScrollPane sP = new JScrollPane(table); //adds the table to a scroll pane
+
 		GridLayout grid2 = new GridLayout(2,1);
 		p1.setLayout(grid2);
 		
 		p1.add(sP, BorderLayout.NORTH);
 
-		//p1.add(sP);
-		//p1.add(p3);
 
 		GridLayout grid3 = new GridLayout(5,2);
 		p3.setLayout(grid3);
@@ -112,7 +116,7 @@ public class TimetableGUI extends JFrame implements ActionListener, WindowListen
 		JLabel l2 = new JLabel("Time Slot");
 		JLabel l3 = new JLabel("Room");
 
-		//combobox to hold the module classes
+		//combobox to hold the module classes. Its contents will be populated by the displayCourses method
 		cb1 = new JComboBox<String>();
 
 		//combobox to hold the timeslots
@@ -139,6 +143,7 @@ public class TimetableGUI extends JFrame implements ActionListener, WindowListen
 		cb3.addItem("G");
 		cb3.addItem("H");
 
+		//buttons to facilitate program operation
 		b1 = new JButton("Remove");
 		b2 = new JButton("Assign");
 		b3 = new JButton("Save Timetable");
@@ -147,7 +152,6 @@ public class TimetableGUI extends JFrame implements ActionListener, WindowListen
 		b2.addActionListener(this);
 		b3.addActionListener(this);
 		b4.addActionListener(this);
-		this.addWindowListener(this);
 
 		p3.add(l1); p3.add(cb1);
 		p3.add(l2); p3.add(cb2);
@@ -166,10 +170,6 @@ public class TimetableGUI extends JFrame implements ActionListener, WindowListen
 		p6.add(p5);
 		
 		p1.add(p6, BorderLayout.SOUTH);
-		
-		TableColumn tc = table.getColumnModel().getColumn(0);
-		tc.setPreferredWidth(90);
-		table.setRowHeight(25);
 
 		ta1 = new JTextArea(14,36);
 		ta1.setFont(new Font("Courier", Font.PLAIN, 14));
@@ -190,13 +190,14 @@ public class TimetableGUI extends JFrame implements ActionListener, WindowListen
 	private boolean readFile(){
 
 		try {
-			FileReader reader = new FileReader("ModulesIn.txt");
+			FileReader reader = new FileReader(inputFile); //open the ModulesIn.txt file
 			Scanner scanner = new Scanner(reader);
-			while(scanner.hasNextLine()){
-				String line = scanner.nextLine();
-					tt.addModule(line);
+			while(scanner.hasNextLine()){ //while there is still a line to be read
+				String line = scanner.nextLine(); //read a line
+					tt.addModule(line); //add the module to the timetable
 			}
-
+			
+			//close file
 			reader.close();
 			scanner.close();
 			return true;
@@ -221,11 +222,11 @@ public class TimetableGUI extends JFrame implements ActionListener, WindowListen
 			if(m != null){
 				courses += String.format("%-10s%-10s%-8s%-8s%n", mo.getModuleCode(), mo.getTimeSlot(),
 						mo.getRoom(), mo.getClassSize());
-				cb1.addItem(mo.getModuleCode());
+				cb1.addItem(mo.getModuleCode()); //populate the module code JCombobox to contain the module codes read from the ModulesIn.txt file 
 			}
 		}
 		
-		ta1.setText(courses);
+		ta1.setText(courses); //display the courses in the text area
 	}
 	
 	/**
@@ -234,6 +235,7 @@ public class TimetableGUI extends JFrame implements ActionListener, WindowListen
 	private void fillTable(){
 		clearTable(); //clear the table contents
 		
+		//the table contents are then refilled after clearing to display the updated module assignments
 		for(Module mo: m){
 			if(mo != null){
 				String time = mo.getTimeSlot();
@@ -245,7 +247,7 @@ public class TimetableGUI extends JFrame implements ActionListener, WindowListen
 				if(row != -1 && col != -1)
 					rowData[row][col] = mo.getModuleCode();
 				AbstractTableModel tm = (AbstractTableModel)table.getModel();
-				tm.fireTableDataChanged();
+				tm.fireTableDataChanged(); //tells table to update its display
 			}
 		}
 	}
@@ -261,7 +263,7 @@ public class TimetableGUI extends JFrame implements ActionListener, WindowListen
 	}
 	
 	/**
-	 * helper method to get what index a time slot belongs to 
+	 * helper method to get what index of the table row a time slot belongs to 
 	 * @param ts is the time slot whose index is required
 	 * @return the required index
 	 */
@@ -306,6 +308,11 @@ public class TimetableGUI extends JFrame implements ActionListener, WindowListen
 		return row;
 	}
 	
+	/**
+	 * gets the index of the table column that a room belongs to
+	 * @param r is the room whose index is required
+	 * @return the required index
+	 */
 	private int getIndexForRoom(char r)
 	{
 		int col;
@@ -346,17 +353,19 @@ public class TimetableGUI extends JFrame implements ActionListener, WindowListen
 	 */
 	public void actionPerformed(ActionEvent e)
 	{
+		//get the selected entries from the combo boxes
 		String code = (String)cb1.getSelectedItem(); 
 		String time = (String)cb2.getSelectedItem();
 		String room = (String)cb3.getSelectedItem();
 		
 		Object source = (JButton)e.getSource();
-		if(source == b2)
+		
+		//if assign button is clicked, module is to be assigned a time slot and a room
+		if(source == b2) 
 		{
 	
-			if(validateInput(code, time, room))
+			if(validateInput(code, time, room)) //check if the selected entries passes the required validations
 			{	
-				
 				Module m = tt.getModuleByCode(code);
 				m.setRoom(room.charAt(0));
 				m.setTimeSlot(time);
@@ -378,6 +387,24 @@ public class TimetableGUI extends JFrame implements ActionListener, WindowListen
 		{
 			handleQuitButton();
 		}
+		
+		//if the remove button is clicked, remove the room and time slot assigned to the module
+		else if(source == b1)
+		{
+			removeModule(code);
+		}
+	}
+	
+	/**
+	 * method that removes the room and time slot assigned to a module
+	 * @param code
+	 */
+	private void removeModule(String code){
+		
+		tt.removeModuleFromRoom(code);
+		tt.removeModuleFromTimeSlot(code);
+		fillTable();
+		displayCourses();
 	}
 	
 	/**
@@ -419,9 +446,9 @@ public class TimetableGUI extends JFrame implements ActionListener, WindowListen
 		
 		try
 		{
-			FileWriter writer = new FileWriter("ModulesOut.txt");
-			writer.write(output);
-			writer.close();
+			FileWriter writer = new FileWriter(outputFile); //create an output file
+			writer.write(output); //write the data to output file
+			writer.close(); //close the file
 		}
 		catch (IOException x)
 		{
@@ -442,8 +469,8 @@ public class TimetableGUI extends JFrame implements ActionListener, WindowListen
 		if(validateRoomCapacity(module, room)) //checks if the room is big enough to accommodate the class size of the module
 				if(validateCourseSubjectAndLevel(module, time)) //checks if there is another module with the same level already taking place on the time slot to be assigned
 					if(validateFreeTimeSlotAndRoom(module, time, room)) //checks if the selected time slot and room have another module assigned to it
-						return true;
-		return false;
+						return true; //if all validations are passed, return true
+		return false; //else return false
 	}
 	
 	/**
@@ -486,7 +513,7 @@ public class TimetableGUI extends JFrame implements ActionListener, WindowListen
 	}
 	
 	/**
-	 * method to check if the room to be assigned to a module can accomodate the class size
+	 * method to check if the room to be assigned to a module can accommodate the class size
 	 * @param module that the room is to be assigned to
 	 * @param room that is to be assigned
 	 * @return result of validation
@@ -515,7 +542,7 @@ public class TimetableGUI extends JFrame implements ActionListener, WindowListen
 		char level1 = module.getLevel(); //get the level of the course to be added
 		String subj1 = module.getSubject(); //get the subject of the course to be added
 		ArrayList<Module> list = tt.getModuleByTime(time); //get a list containing modules taking place at the specified time
-		for(Module mo: list){
+		for(Module mo: list){ //for each module,
 			char level2 = mo.getLevel(); //get the level of that module
 			String subj2 = mo.getSubject(); //get the subject of that module
 			

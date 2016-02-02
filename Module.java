@@ -5,7 +5,6 @@ public class Module {
 	private String moduleCode, moduleTitle, timeSlot;
 	private char room;
 	private int classSize;
-	//private char level; still contemplating if it is needed
 	
 	/**
 	 * constructor to initialize instance variables
@@ -21,7 +20,6 @@ public class Module {
 		timeSlot = ts;
 		room = r;
 		classSize = cs;
-		//level = mt.charAt(2); still contemplating if it is needed
 	}
 	
 	/**
@@ -69,11 +67,15 @@ public class Module {
 	 * @return module level
 	 */
 	public char getLevel(){
-		return moduleCode.charAt(2);
+		return moduleCode.charAt(2); //the level is represented by the third character in the module title
 	}
 	
+	/**
+	 * method to return the subject that the course belongs to
+	 * @return the module subject
+	 */
 	public String getSubject(){
-		return moduleCode.substring(0, 2);
+		return moduleCode.substring(0, 2); //the subject is represented by the first two characters of the module title
 	}
 	
 	/**

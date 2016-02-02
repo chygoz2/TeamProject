@@ -4,11 +4,10 @@ public class Timetable {
 
 	//instance variables
 	private ArrayList<Module> programme;
-	
 	private int moduleCount;
 	
+	//constructor to initialize the instance variables
 	public Timetable(){
-		// default constructor
 		programme = new ArrayList<Module>();
 		moduleCount = 0;
 	}
@@ -37,8 +36,8 @@ public class Timetable {
 	 * @param ts is the time slot to be assigned to the module
 	 */
 	public void assignModuleToTimeSlot(String tt, String ts){
-		Module m = getModuleByCode(tt);
-		m.setTimeSlot(ts);
+		Module m = getModuleByCode(tt); //gets the module with the specified title
+		m.setTimeSlot(ts); //sets the time slot of that module
 	}
 	
 	/**
@@ -46,9 +45,9 @@ public class Timetable {
 	 * @param tt is the code of the module
 	 * @param ts is the time slot to be removed from the module
 	 */
-	public void removeModuleFromTimeSlot(String tt, String ts){
-		Module m = getModuleByCode(tt);
-		m.setTimeSlot("?????");
+	public void removeModuleFromTimeSlot(String tt){
+		Module m = getModuleByCode(tt); //gets the module with the specified title
+		m.setTimeSlot("?????"); //sets the timeslot of the module to "?????" indicating that the module has no time slot
 	}
 	
 	/**
@@ -57,7 +56,7 @@ public class Timetable {
 	 * @param r is the room to be assigned to the module
 	 */
 	public void addModuleToRoom(String tt, char r){
-		Module m = getModuleByCode(tt);
+		Module m = getModuleByCode(tt); //gets the module with the specified title
 		m.setRoom(r);
 	}
 	
@@ -66,9 +65,9 @@ public class Timetable {
 	 * @param tt is the code of the module
 	 * @param r is the room to be removed
 	 */
-	public void removeModuleFromRoom(String tt, char r){
-		Module m = getModuleByCode(tt);
-		m.setRoom('?');
+	public void removeModuleFromRoom(String tt){
+		Module m = getModuleByCode(tt); //gets the module with the specified title
+		m.setRoom('?'); //sets the room assigned to the module to '?' indicating that the module is not assigned to any room
 	}
 	
 	/**
@@ -78,10 +77,10 @@ public class Timetable {
 	 */
 	public Module getModuleByCode(String s){
 		for(Module m: programme){
-			if(m != null && m.getModuleCode() == s)
-				return m;
+			if(m != null && m.getModuleCode() == s) //if a module with the specified title is found,
+				return m; //return that module
 		}
-		return null;
+		return null; //else module not found. Return null
 	}
 	
 	/**
@@ -91,13 +90,14 @@ public class Timetable {
 	 */
 	public ArrayList<Module> getModuleByTime(String time)
 	{
-		ArrayList<Module> list = new ArrayList<Module>();
+		//uses a list to store the module since a time slot can have multiple modules assigned to it but with different rooms
+		ArrayList<Module> list = new ArrayList<Module>(); 
 		for(Module m: programme)
 		{
-			if(m != null && m.getTimeSlot().equals(time))
-				list.add(m);
+			if(m != null && m.getTimeSlot().equals(time)) //if a module is assigned to the specified time slot,
+				list.add(m); //add the module to the list
 		}
-		return list;
+		return list; //return the list
 	}
 	
 	/**
