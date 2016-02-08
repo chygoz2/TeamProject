@@ -26,14 +26,14 @@ public class TimetableGUI extends JFrame implements ActionListener, WindowListen
 	private String [][] rowData;
 	
 	//room capacities
-	private static final int ROOM_A_SIZE = 100;
-	private static final int ROOM_B_SIZE = 100;
-	private static final int ROOM_C_SIZE = 60;
-	private static final int ROOM_D_SIZE = 60;
-	private static final int ROOM_E_SIZE = 60;
-	private static final int ROOM_F_SIZE = 30;
-	private static final int ROOM_G_SIZE = 30;
-	private static final int ROOM_H_SIZE = 30;
+	private final int ROOM_A_SIZE = 100;
+	private final int ROOM_B_SIZE = 100;
+	private final int ROOM_C_SIZE = 60;
+	private final int ROOM_D_SIZE = 60;
+	private final int ROOM_E_SIZE = 60;
+	private final int ROOM_F_SIZE = 30;
+	private final int ROOM_G_SIZE = 30;
+	private final int ROOM_H_SIZE = 30;
 	
 	private final String inputFile = "ModulesIn.txt";
 	private final String outputFile = "ModulesOut.txt";
