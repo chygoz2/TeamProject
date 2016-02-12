@@ -411,22 +411,11 @@ public class TimetableGUI extends JFrame implements ActionListener, WindowListen
 	 * method that handles what happens when the quit button or the window close button is clicked.
 	 */
 	private void handleQuitButton(){
-		int confirm = JOptionPane.showConfirmDialog(null, "You are about to exit the program. Have you saved the timetable first?", "Exit Program?",  JOptionPane.YES_NO_CANCEL_OPTION);
+		int confirm = JOptionPane.showConfirmDialog(null, "Are you sure you want to exit the program?", "Exit Program?",  JOptionPane.YES_NO_OPTION);
 		
-		if(confirm == JOptionPane.YES_OPTION)
+		if(confirm == JOptionPane.YES_OPTION){
+			saveOutput();
 			System.exit(0);
-		else if(confirm == JOptionPane.NO_OPTION)
-		{
-			int confirm2 = JOptionPane.showConfirmDialog(null, "Would you like to save the timetable?", "Exit Program?", JOptionPane.YES_NO_OPTION);
-			
-			if(confirm2 == JOptionPane.YES_OPTION)
-			{
-				saveOutput();
-				System.exit(0);
-			}
-			else
-				System.exit(0);
-				
 		}
 	}
 	
@@ -547,7 +536,7 @@ public class TimetableGUI extends JFrame implements ActionListener, WindowListen
 			String subj2 = mo.getSubject(); //get the subject of that module
 			
 			//if the module to be assigned is the same as what was already there in the time slot, validation is passed. (The operation is just a case of reassignment)
-			if(m.equals(module))
+			if(mo.equals(module))
 				return true;
 			
 			//if a module with the same level and subject with the new module to be assigned exists, validation fails
